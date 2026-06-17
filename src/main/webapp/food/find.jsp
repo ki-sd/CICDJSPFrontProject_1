@@ -63,7 +63,33 @@ const jsonView=(json)=>{
 $((e)=>{
 	commons(1)
 	$('.btns').on('click',()=>{
-		
+		let types=[]
+		let count=$("input[name=type]:checked").length
+		if(count===0){
+			alert("체크박스에 체크를 하세요")
+			return
+		}
+		$("input[name=type]:checked").each(function(){
+			types.push($(this).val())
+		})
+		let ss=$('#ss').val()
+		if(ss.trim()===""){
+			$('#ss').focus()
+			return
+		}
+		let column=$('#column').val()
+		$.ajax({
+			type:'post',
+			url:'../food/find_ajax.do',
+			data:{"ss":ss,"column":column,"type":types,"page":1},
+			traditional:true, // 배열 쓸때 안쓰면 null값 됨
+			success:(result)=>{
+				let json=JSON.parse(result)
+				console.log(json)
+				$('#ss').val(json[0].ss)
+				jsonView(json)
+			}
+		})
 	})
 })
 </script>
